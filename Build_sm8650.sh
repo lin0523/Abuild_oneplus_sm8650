@@ -15,7 +15,7 @@ error() {
 }
 
 # 参数设置
-KERNEL_SUFFIX="-android14-11-gd3f2a1a22282"
+KERNEL_SUFFIX="-android14-TG@qdykernel"
 ENABLE_KPM=true
 ENABLE_LZ4KD=true
 
@@ -32,12 +32,12 @@ case $device_choice in
         REPO_MANIFEST="oneplus_ace5.xml"
         ;;
     2)
-        DEVICE_NAME="oneplus_pad_pro"
-        REPO_MANIFEST="oneplus_pad_pro_v.xml"
-        ;;
-    3)
         DEVICE_NAME="oneplus_12"
         REPO_MANIFEST="oneplus12_v.xml"
+        ;;
+    3)
+        DEVICE_NAME="oneplus_pad_pro"
+        REPO_MANIFEST="oneplus_pad_pro_v.xml"
         ;;
     *)
         error "无效的选择，请输入1-3之间的数字"
@@ -139,7 +139,7 @@ cd "$KERNEL_WORKSPACE" || error "无法进入kernel_workspace目录"
 
 # 初始化源码
 info "初始化repo并同步源码..."
-repo init -u https://github.com/HanKuCha/kernel_manifest.git -b refs/heads/oneplus/sm8650 -m "$REPO_MANIFEST" --depth=1 || error "repo初始化失败"
+repo init -u https://github.com/OnePlusOSS/kernel_manifest.git -b refs/heads/oneplus/sm8650 -m "$REPO_MANIFEST" --depth=1 || error "repo初始化失败"
 repo --trace sync -c -j$(nproc --all) --no-tags || error "repo同步失败"
 
 # ==================== 核心构建步骤 ====================
