@@ -11,6 +11,10 @@ on:
           - 'oneplus12'
           - 'oneplus_pad_pro'
         default: 'oneplus_ace5'
+      KERNEL_SUFFIX:
+        description: '内核名称修改(默认官方名称可中文、emoji)'
+        required: true
+        default: '-android14-11-o-g067e031c688b'
       enable_feature_y:
         description: "启用lz4+zstd优化"
         required: false
