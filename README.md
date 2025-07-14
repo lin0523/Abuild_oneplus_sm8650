@@ -12,12 +12,12 @@
 ## 使用方法
 
 ```bash
-git clone https://github.com/showdo/build_oneplus_sm8650.git
+git clone https://github.com/showdo/Abuild_oneplus_sm8650.git
 ```
 
 > ⚠️ 注意：如果你想使用你复刻的项目进行编译，请将上面链接中的 `showdo` 改成你的 GitHub 用户名。  
 > 比如你的用户名是 `abcd`，则命令为：  
-> `git clone https://github.com/abcd/build_oneplus_sm8650.git`
+> `git clone https://github.com/abcd/Abuild_oneplus_sm8650.git`
 
 ```bash
 cd build_oneplus_sm8650
