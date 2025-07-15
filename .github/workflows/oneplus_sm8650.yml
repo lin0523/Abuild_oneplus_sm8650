@@ -132,16 +132,6 @@ jobs:
           mkdir kernel_workspace && cd kernel_workspace
           repo init -u https://github.com/OnePlusOSS/kernel_manifest.git -b refs/heads/oneplus/sm8650 -m ${REPO_MANIFEST}.xml --depth=1
           repo --trace sync -c -j$(nproc --all) --no-tags
-          # 移除dirty脏块
-          sed -i 's/ -dirty//g' kernel_platform/common/scripts/setlocalversion
-          sed -i 's/ -dirty//g' kernel_platform/msm-kernel/scripts/setlocalversion
-          sed -i 's/ -dirty//g' kernel_platform/external/dtc/scripts/setlocalversion
-          sed -i '$i res=$(echo "$res" | sed '\''s/-dirty//g'\'')' kernel_platform/common/scripts/setlocalversion
-          sed -i '$i res=$(echo "$res" | sed '\''s/-dirty//g'\'')' kernel_platform/msm-kernel/scripts/setlocalversion
-          sed -i '$i res=$(echo "$res" | sed '\''s/-dirty//g'\'')' kernel_platform/external/dtc/scripts/setlocalversion
-          sed -i '$s|echo "\$res"|echo "-android14-TG@qdykernel"|' kernel_platform/common/scripts/setlocalversion            
-          sed -i '$s|echo "\$res"|echo "-android14-TG@qdykernel"|' kernel_platform/msm-kernel/scripts/setlocalversion
-          sed -i '$s|echo "\$res"|echo "-android14-TG@qdykernel"|' kernel_platform/external/dtc/scripts/setlocalversion
           # 清理abi保护
           rm kernel_platform/common/android/abi_gki_protected_exports_* || echo "No protected exports!"
           rm kernel_platform/msm-kernel/android/abi_gki_protected_exports_* || echo "No protected exports!"
@@ -224,11 +214,12 @@ jobs:
       - name: 🔧 Set Kernel name (设置内核名称)
         env:
           REPO_MANIFEST: ${{ github.event.inputs.REPO_MANIFEST }}
-          KEEP_ORIGINAL: ${{ github.event.inputs.keep_original_settings }}
           CUSTOM_SUFFIX: ${{ github.event.inputs.custom_kernel_suffix }}
+          KEEP_ORIGINAL: ${{ github.event.inputs.keep_original_settings || 'false' }}
+          DEVICES_NAME: ${{ github.event.inputs.device_name }}  # 明确声明设备变量
         run: |
           cd kernel_workspace/kernel_platform
-
+          # 设置默认后缀（含默认分支）
           case "$DEVICES_NAME" in
            oneplus_ace5)
               DEFAULT_SUFFIX="-android14-11-0-gc3f9a27f7c1f"
@@ -239,11 +230,15 @@ jobs:
             oneplus_12)
               DEFAULT_SUFFIX="-android11-11-o-gfc70d29746a7-4k"
               ;;
+            *)
+              DEFAULT_SUFFIX="-android11-11-o-4k"
           esac
           
           echo "当前机型: $DEVICES_NAME"
           echo "自定义后缀: $CUSTOM_SUFFIX"
-          
+          echo "默认后缀: $DEFAULT_SUFFIX"
+
+          # 条件判断（格式化更清晰）
           if [ "$KEEP_ORIGINAL" = "false" ]&&[ -n "$CUSTOM_SUFFIX" ]; then
               DEFAULT_SUFFIX="$CUSTOM_SUFFIX"
               echo "使用自定义内核名称: $DEFAULT_SUFFIX"
