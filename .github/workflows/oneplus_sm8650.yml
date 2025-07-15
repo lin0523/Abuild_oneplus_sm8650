@@ -252,7 +252,7 @@ jobs:
           if [ "$KEEP_ORIGINAL" = "false" ]; then
             if [ -n "$CUSTOM_SUFFIX" ]; then
               DEFAULT_SUFFIX="$CUSTOM_SUFFIX"
-              echo "使用自定义内核名称: $CUSTOM_SUFFIX"
+              echo "使用自定义内核名称: $DEFAULT_SUFFIX"
             else
               echo "使用机型默认内核名称: $DEFAULT_SUFFIX"
             fi
