@@ -221,11 +221,11 @@ jobs:
       - name: 🔧 Set Kernel name (设置内核名称)
         env:
           REPO_MANIFEST: ${{ github.event.inputs.REPO_MANIFEST }}
+          KEEP_ORIGINAL: ${{ github.event.inputs.keep_original_settings}}
           CUSTOM_SUFFIX: ${{ github.event.inputs.custom_kernel_suffix }}
-          KEEP_ORIGINAL: ${{ github.event.inputs.keep_original_settings || 'false' }}
         run: |
           cd kernel_workspace/kernel_platform
-          echo "CUSTOM_SUFFIX: $CUSTOM_SUFFIX"
+         
           # 设置默认后缀（含默认分支）
           case "$DEVICES_NAME" in
            oneplus_ace5)
@@ -237,22 +237,27 @@ jobs:
             oneplus_12)
               DEFAULT_SUFFIX="-android11-11-o-gfc70d29746a7-4k"
               ;;
-            *)
-              DEFAULT_SUFFIX="-android11-11-o-4k"
-              ;;
           esac
           
           echo "当前机型: $DEVICES_NAME"
+          echo "保持原设置: $KEEP_ORIGINAL"
           echo "自定义后缀: $CUSTOM_SUFFIX"
           echo "默认后缀: $DEFAULT_SUFFIX"
 
           # 条件判断（格式化更清晰）
-          if [ "$KEEP_ORIGINAL" = "false" ]&&[ -n "$CUSTOM_SUFFIX" ]; then
+          if [ "$KEEP_ORIGINAL" = "false" ]; then
+            if [ -n "$CUSTOM_SUFFIX" ]; then
               DEFAULT_SUFFIX="$CUSTOM_SUFFIX"
               echo "使用自定义内核名称: $DEFAULT_SUFFIX"
+            else
+              echo "使用机型默认内核名称: $DEFAULT_SUFFIX"
+            fi
+          else
+            echo "保持原内核名称设置"
           fi
           ESCAPED_SUFFIX=$(printf '%s\n' "$DEFAULT_SUFFIX" | sed 's:[\/&]:\\&:g')
           sudo sed -i "s/-4k/$ESCAPED_SUFFIX/g" ./common/arch/arm64/configs/gki_defconfig
+          sed -i 's/${scm_version}//' ./common/scripts/setlocalversion
           
           
       - name: 🔨 Build Kernel (构建内核)
