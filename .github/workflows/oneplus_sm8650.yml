@@ -275,31 +275,27 @@ jobs:
          
       - name: 📦 Make AnyKernel3 (创建AnyKernel3)
         run: |
-          # 确保目录存在
-          rm -rf AnyKernel3_output
-          mkdir -p AnyKernel3_output
+          # 创建带版本号的目录
+          OUTPUT_DIR="AnyKernel3_${DEVICES_NAME}_${KSUVER}"
+          rm -rf "$OUTPUT_DIR"
+          mkdir -p "$OUTPUT_DIR"
           
           # 克隆模板
           git clone https://github.com/showdo/AnyKernel3.git AnyKernel3_template --depth=1
-          
-          # 复制模板文件
-          cp -r AnyKernel3_template/* AnyKernel3_output/
+          cp -r AnyKernel3_template/* "$OUTPUT_DIR/"
           rm -rf AnyKernel3_template
           
-          # 复制内核镜像
-          if [ -f "kernel_workspace/kernel_platform/common/out/arch/arm64/boot/Image" ]; then
-            cp -v kernel_workspace/kernel_platform/common/out/arch/arm64/boot/Image AnyKernel3_output/
-          else
-            echo "错误：找不到内核镜像文件！"
-            ls -R kernel_workspace/kernel_platform/common/out/arch/arm64/boot/
-            exit 1
-          fi
+          # 复制内核
+          cp -v kernel_workspace/kernel_platform/common/out/arch/arm64/boot/Image "$OUTPUT_DIR/"
+          
+          # 创建ZIP包
+          cd "$OUTPUT_DIR" && zip -r "../${OUTPUT_DIR}.zip" ./*
 
       - name: 📤 Upload AnyKernel3 (上传 AnyKernel3)
         uses: actions/upload-artifact@v4
         with:
           name: Kernel_${{ env.DEVICES_NAME }}_${{ env.KSUVER }}
-          path: AnyKernel3_output/
+          path: AnyKernel3_${{ env.DEVICES_NAME }}_${{ env.KSUVER }}.zip
           retention-days: 7
           if-no-files-found: error
          
