@@ -142,7 +142,11 @@ jobs:
           # 清理abi保护
           rm kernel_platform/common/android/abi_gki_protected_exports_* || echo "No protected exports!"
           rm kernel_platform/msm-kernel/android/abi_gki_protected_exports_* || echo "No protected exports!"
-          
+          # 清理工作目录
+          cd kernel_platform/common
+          git add .
+          git commit -m "Clean up for kernel compilation" || echo "No changes to commit"
+    
       - name: ⚙️ Set up SukiSU Ultra (配置 SukiSU Ultra)
         run: |
           cd kernel_workspace/kernel_platform
@@ -257,8 +261,7 @@ jobs:
           fi
           ESCAPED_SUFFIX=$(printf '%s\n' "$DEFAULT_SUFFIX" | sed 's:[\/&]:\\&:g')
           sudo sed -i "s/-4k/$ESCAPED_SUFFIX/g" ./common/arch/arm64/configs/gki_defconfig
-          sed -i 's/${scm_version}//' ./common/scripts/setlocalversion
-          
+          echo "" > ./common/scripts/setlocalversion
           
       - name: 🔨 Build Kernel (构建内核)
         run: |
