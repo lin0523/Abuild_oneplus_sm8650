@@ -11,11 +11,18 @@ on:
           - 'oneplus12'
           - 'oneplus_pad_pro'
         default: 'oneplus_ace5'
-      
+        
+      # 添加 keep_original_settings 参数的定义
+      keep_original_settings:
+        description: "是否保留原始设置"
+        required: false
+        default: 'false'
+        type: string
+        
       custom_kernel_suffix:
         description: "✏️ 自定义内核名称(示例:-TG@qdykernel)"
         required: false
-        default: ''
+        default: '-android14-11-0-gc3f9a27f7c1f'
         
       enable_feature_y:
         description: "启用lz4+zstd优化"
