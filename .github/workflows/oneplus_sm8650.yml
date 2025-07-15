@@ -225,6 +225,7 @@ jobs:
           KEEP_ORIGINAL: ${{ github.event.inputs.keep_original_settings || 'false' }}
         run: |
           cd kernel_workspace/kernel_platform
+          echo "CUSTOM_SUFFIX: $CUSTOM_SUFFIX"
           # 设置默认后缀（含默认分支）
           case "$DEVICES_NAME" in
            oneplus_ace5)
@@ -252,7 +253,7 @@ jobs:
           fi
           ESCAPED_SUFFIX=$(printf '%s\n' "$DEFAULT_SUFFIX" | sed 's:[\/&]:\\&:g')
           sudo sed -i "s/-4k/$ESCAPED_SUFFIX/g" ./common/arch/arm64/configs/gki_defconfig
-          sed -i 's/\${scm_version}//' ./common/scripts/setlocalversion 2>/dev/null || true
+          
           
       - name: 🔨 Build Kernel (构建内核)
         run: |
