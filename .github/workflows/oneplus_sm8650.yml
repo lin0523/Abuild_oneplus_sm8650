@@ -252,7 +252,7 @@ jobs:
           if [ "$KEEP_ORIGINAL" = "false" ]; then
             if [ -n "$CUSTOM_SUFFIX" ]; then
               DEFAULT_SUFFIX="$CUSTOM_SUFFIX"
-              echo "使用自定义内核名称: $DEFAULT_SUFFIX"
+              echo "使用自定义内核名称: $CUSTOM_SUFFIX"
             else
               echo "使用机型默认内核名称: $DEFAULT_SUFFIX"
             fi
@@ -260,7 +260,7 @@ jobs:
             echo "保持原内核名称设置"
           fi
           ESCAPED_SUFFIX=$(printf '%s\n' "$DEFAULT_SUFFIX" | sed 's:[\/&]:\\&:g')
-          sudo sed -i "s/-4k/$ESCAPED_SUFFIX/g" ./common/arch/arm64/configs/gki_defconfig
+          sudo sed -i "s/$/ $ESCAPED_SUFFIX/g" ./common/arch/arm64/configs/gki_defconfig
           echo "" > ./common/scripts/setlocalversion
           
       - name: 🔨 Build Kernel (构建内核)
