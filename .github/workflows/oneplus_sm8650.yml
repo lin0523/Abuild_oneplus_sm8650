@@ -275,16 +275,33 @@ jobs:
          
       - name: 📦 Make AnyKernel3 (创建AnyKernel3)
         run: |
-          git clone https://github.com/showdo/AnyKernel3.git --depth=1      
-          rm -rf ./AnyKernel3/.git
-          rm -rf ./AnyKernel3/push.sh
-          cp kernel_workspace/kernel_platform/common/out/arch/arm64/boot/Image ./AnyKernel3/
+          # 确保目录存在
+          rm -rf AnyKernel3_output
+          mkdir -p AnyKernel3_output
+          
+          # 克隆模板
+          git clone https://github.com/showdo/AnyKernel3.git AnyKernel3_template --depth=1
+          
+          # 复制模板文件
+          cp -r AnyKernel3_template/* AnyKernel3_output/
+          rm -rf AnyKernel3_template
+          
+          # 复制内核镜像
+          if [ -f "kernel_workspace/kernel_platform/common/out/arch/arm64/boot/Image" ]; then
+            cp -v kernel_workspace/kernel_platform/common/out/arch/arm64/boot/Image AnyKernel3_output/
+          else
+            echo "错误：找不到内核镜像文件！"
+            ls -R kernel_workspace/kernel_platform/common/out/arch/arm64/boot/
+            exit 1
+          fi
 
       - name: 📤 Upload AnyKernel3 (上传 AnyKernel3)
         uses: actions/upload-artifact@v4
         with:
-          name: AnyKernel3_${{ env.KSUVER }}_${{ env.DEVICES_NAME }}_SuKiSU
-          path: ./AnyKernel3/*
+          name: Kernel_${{ env.DEVICES_NAME }}_${{ env.KSUVER }}
+          path: AnyKernel3_output/
+          retention-days: 7
+          if-no-files-found: error
          
       - name: 📊 Post-build disk check (构建后空间检查)
         run: |
