@@ -15,7 +15,7 @@ error() {
 }
 
 # 参数设置
-KERNEL_SUFFIX="-android14-11-0-gc3f9a27f7c1f"
+KERNEL_SUFFIX="-android14-TG@qdykernel"
 ENABLE_KPM=true
 ENABLE_LZ4KD=true
 
@@ -30,7 +30,6 @@ case $device_choice in
     1)
         DEVICE_NAME="oneplus_ace5"
         REPO_MANIFEST="oneplus_ace5.xml"
-        KERNEL_SUFFIX="-android14-11-0-gc3f9a27f7c1f"
         ;;
     2)
         DEVICE_NAME="oneplus_12"
@@ -242,11 +241,6 @@ fi
 
 # 移除 check_defconfig（禁用 sanity check）
 sed -i 's/check_defconfig//' ./common/build.config.gki
-
-# 修改内核名称
-info "修改内核名称..."
-sed -i 's/${scm_version}//' common/scripts/setlocalversion || error "修改setlocalversion失败"
-sudo sed -i "s/-4k/${KERNEL_SUFFIX}/g" common/arch/arm64/configs/gki_defconfig || error "修改gki_defconfig失败"
 
 # 构建内核
 info "开始构建内核..."
