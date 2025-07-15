@@ -216,7 +216,6 @@ jobs:
           REPO_MANIFEST: ${{ github.event.inputs.REPO_MANIFEST }}
           CUSTOM_SUFFIX: ${{ github.event.inputs.custom_kernel_suffix }}
           KEEP_ORIGINAL: ${{ github.event.inputs.keep_original_settings || 'false' }}
-          DEVICES_NAME: ${{ github.event.inputs.device_name }}  # 明确声明设备变量
         run: |
           cd kernel_workspace/kernel_platform
           # 设置默认后缀（含默认分支）
@@ -232,6 +231,7 @@ jobs:
               ;;
             *)
               DEFAULT_SUFFIX="-android11-11-o-4k"
+              ;;
           esac
           
           echo "当前机型: $DEVICES_NAME"
@@ -245,7 +245,7 @@ jobs:
           fi
           ESCAPED_SUFFIX=$(printf '%s\n' "$DEFAULT_SUFFIX" | sed 's:[\/&]:\\&:g')
           sudo sed -i "s/-4k/$ESCAPED_SUFFIX/g" ./common/arch/arm64/configs/gki_defconfig
-          sed -i 's/${scm_version}//' ./common/scripts/setlocalversion
+          sed -i 's/\${scm_version}//' ./common/scripts/setlocalversion 2>/dev/null || true
           
       - name: 🔨 Build Kernel (构建内核)
         run: |
