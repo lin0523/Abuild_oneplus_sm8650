@@ -18,7 +18,7 @@ on:
         default: 'oneplus_ace5'
       
       KERNEL_SUFFIX:
-        description: '内核后缀(留空默认,开头别加连字符)'
+        description: '内核后缀(留空默认)'
         required: false
         type: string
         default: '-android14-11-0-gc3f9a27f7c1f'
@@ -146,7 +146,6 @@ jobs:
           sed -i '$i res=$(echo "$res" | sed '\''s/-dirty//g'\'')' kernel_platform/external/dtc/scripts/setlocalversion
           
           # 修改内核名
-          info "修改内核名..."
           sed -i '$s|echo "\$res"|echo "$KERNEL_SUFFIX"|' kernel_platform/common/scripts/setlocalversion            
           sed -i '$s|echo "\$res"|echo "$KERNEL_SUFFIX"|' kernel_platform/msm-kernel/scripts/setlocalversion
           sed -i '$s|echo "\$res"|echo "$KERNEL_SUFFIX"|' kernel_platform/external/dtc/scripts/setlocalversion
