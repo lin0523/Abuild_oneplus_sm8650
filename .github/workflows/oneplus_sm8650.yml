@@ -2,7 +2,7 @@ name: Build_oneplus_sm8650
 
 env:
 
-  KERNEL_NAME: 'android14-11-0-gc3f9a27f7c1f'
+  KERNEL_NAME: '-android14-11-0-gc3f9a27f7c1f'
   
 on:
   workflow_dispatch:
@@ -21,7 +21,7 @@ on:
         description: '内核后缀(留空默认,开头别加连字符)'
         required: false
         type: string
-        default: 'android14-11-0-gc3f9a27f7c1f'
+        default: '-android14-11-0-gc3f9a27f7c1f'
       
       enable_feature_y:
         description: "启用lz4+zstd优化"
