@@ -18,10 +18,10 @@ on:
         default: 'oneplus_ace5'
       
       KERNEL_SUFFIX:
-      description: '内核后缀(留空默认,开头别加连字符)'
-      required: false
-      type: string
-      default: 'android14-11-0-gc3f9a27f7c1f'
+        description: '内核后缀(留空默认,开头别加连字符)'
+        required: false
+        type: string
+        default: 'android14-11-0-gc3f9a27f7c1f'
       
       enable_feature_y:
         description: "启用lz4+zstd优化"
