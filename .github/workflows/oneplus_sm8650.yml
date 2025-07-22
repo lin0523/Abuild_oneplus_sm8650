@@ -17,7 +17,7 @@ on:
         description: '内核后缀(留空默认)'
         required: false
         type: string
-        default: '-android14-11-0-gc3f9a27f7c1f'
+        default: '-android14-11-o-gc3f9a27f7c1f'
       
       enable_feature_y:
         description: "启用lz4+zstd优化"
