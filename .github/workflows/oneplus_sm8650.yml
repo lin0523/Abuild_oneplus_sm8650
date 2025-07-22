@@ -1,4 +1,4 @@
-name: Build_oneplus_sm8650
+name: Abuild_oneplus_sm8650
 
 on:
   workflow_dispatch:
@@ -140,7 +140,10 @@ jobs:
           sed -i '$i res=$(echo "$res" | sed '\''s/-dirty//g'\'')' kernel_platform/common/scripts/setlocalversion
           sed -i '$i res=$(echo "$res" | sed '\''s/-dirty//g'\'')' kernel_platform/msm-kernel/scripts/setlocalversion
           sed -i '$i res=$(echo "$res" | sed '\''s/-dirty//g'\'')' kernel_platform/external/dtc/scripts/setlocalversion
-          
+          # 修改内核名
+          sed -i '$s|echo "\$res"|echo "${{ github.event.inputs.KERNEL_SUFFIX }}"|' kernel_platform/common/scripts/setlocalversion            
+          sed -i '$s|echo "\$res"|echo "${{ github.event.inputs.KERNEL_SUFFIX }}"|' kernel_platform/msm-kernel/scripts/setlocalversion
+          sed -i '$s|echo "\$res"|echo "${{ github.event.inputs.KERNEL_SUFFIX }}"|' kernel_platform/external/dtc/scripts/setlocalversion
         
           # 清理abi保护
           rm kernel_platform/common/android/abi_gki_protected_exports_* || echo "No protected exports!"
@@ -221,40 +224,6 @@ jobs:
           # Remove check_defconfig
           sed -i 's/check_defconfig//' ./common/build.config.gki
           
-      - name: 🔧 Set Kernel name (设置内核名称)
-        env:
-          REPO_MANIFEST: ${{ github.event.inputs.REPO_MANIFEST }}
-          CUSTOM_SUFFIX: ${{ github.event.inputs.KERNEL_SUFFIX }}
-        run: |
-          cd kernel_workspace/kernel_platform
-
-          case "$DEVICES_NAME" in
-            oneplus_ace5)
-              DEFAULT_SUFFIX="-android14-11-0-gc3f9a27f7c1f"
-              ;;
-            oneplus_12)
-              DEFAULT_SUFFIX="-android14-11-0-gba3bcfd39307"
-              ;;
-            oneplus_pad_pro)
-              DEFAULT_SUFFIX="-android14-11-g0261dbe3cf7e-4k"
-              ;;
-          esac
-          
-          echo "当前机型: $DEVICES_NAME"
-          echo "自定义后缀: $CUSTOM_SUFFIX"
-          echo "默认后缀: $DEFAULT_SUFFIX"
-          
-          
-          if [ -n "$CUSTOM_SUFFIX" ]; then
-            DEFAULT_SUFFIX="$CUSTOM_SUFFIX"
-              echo "使用自定义内核名称: $DEFAULT_SUFFIX"
-            else
-              echo "使用机型默认内核名称: $DEFAULT_SUFFIX"
-            fi
-          
-          ESCAPED_SUFFIX=$(printf '%s\n' "$DEFAULT_SUFFIX" | sed 's:[\/&]:\\&:g')
-          sudo sed -i "s/-4k/$ESCAPED_SUFFIX/g" ./common/arch/arm64/configs/gki_defconfig
-          sed -i 's/${scm_version}//' ./common/scripts/setlocalversion
           
       - name: 🔨 Build Kernel (构建内核)
         run: |
